@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://your-api-base-url.com/users';
+const API_BASE_URL = 'https://jsonplaceholder.typicode.com/users';
 
 export const addUser = async (name: string, email: string) => {
   const response = await axios.post(API_BASE_URL, { name, email });

@@ -16,9 +16,14 @@ import { Users } from "@/types";
 import useLoadingStore from "@/store/Loading";
 import DataCounter from "../DataCounter";
 import getUsers from "../../../app/(api)/getUser";
+import { addUser, deleteUser, updateUser } from "../../../app/(api)/Users";
 
 export default function HomePage() {
-  // const { fetchUsers } = useCountData((state) => state);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("testing@gmail.com");
+  const [selectedEditUserId, setSelectedEditUserId] = useState<number | null>(
+    null
+  );
   const [users, setUsers] = useState<Users[]>([]);
   const setLoading = useLoadingStore((state) => state.setLoading);
   const setUsersCount = useCountData((state) => state.setUsersCount);
@@ -26,9 +31,59 @@ export default function HomePage() {
   if (users.length) {
     setUsersCount(users.length);
   }
-  // Directly setting state without user interaction or lifecycle methods can lead to issues.
-  // This is for demonstration purposes.
+  const onSubmitClicked = async () => {
+    if (selectedEditUserId != null) {
+      try {
+        setLoading(true);
+        const updatedUser = await updateUser(selectedEditUserId, name, email);
+        const updatedUsers = users.map((user) =>
+          user.id === selectedEditUserId ? updatedUser : user
+        );
+        setUsers(updatedUsers);
+        setName("");
+        setEmail("");
+        setSelectedEditUserId(null);
+        alert("Data Berhasil Diupdate");
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      if (selectedEditUserId === null) return;
+      try {
+        setLoading(true);
+        const newUser = await addUser(name, email);
+        setUsers([...users, newUser]);
+        setName("");
+        alert("Data Berhasil Ditambahkan");
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
 
+  const handleEdit = (user: Users) => {
+    setName(user.name);
+    setEmail(user.email);
+    setSelectedEditUserId(user.id);
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      setLoading(true);
+      await deleteUser(id);
+      const filteredUsers = users.filter((user) => user.id !== id);
+      setUsers(filteredUsers);
+      alert("Data Berhasil Dihapus");
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -50,12 +105,22 @@ export default function HomePage() {
     <div className="mt-5">
       <DataCounter />
       <div className="my-5 flex flex-col gap-2">
-        <Typography className="font-bold text-xl">Tambah Data</Typography>
+        <Typography className="font-bold text-xl">
+          {!selectedEditUserId ? "Tambah Data" : "Update Data"}
+        </Typography>
         <div className="flex gap-3">
-          <TextField required id="outlined-required" defaultValue="John" />
-          {/* <Button onClick={} className="bg-blue-500 text-white hover:bg-blue-700 w-24 normal-case">
-            Submit
-          </Button> */}
+          <TextField
+            required
+            id="outlined-required"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <Button
+            onClick={onSubmitClicked}
+            className="bg-blue-500 text-white hover:bg-blue-700 w-24 normal-case"
+          >
+            {!selectedEditUserId ? "Submit" : "Update"}
+          </Button>
         </div>
       </div>
       <Table>
@@ -76,10 +141,20 @@ export default function HomePage() {
               <TableCell>{row.email}</TableCell>
               <TableCell>
                 <div className="flex gap-2">
-                  <Button className="normal-case outline-1 outline outline-yellow-300 text-yellow-300 hover:outline-yellow-500 hover:text-yellow-500">
+                  <Button
+                    onClick={() => {
+                      handleEdit(row);
+                    }}
+                    className="normal-case outline-1 outline outline-yellow-300 text-yellow-300 hover:outline-yellow-500 hover:text-yellow-500"
+                  >
                     Edit
                   </Button>
-                  <Button className="normal-case outline-1 outline outline-red-300 text-red-300 hover:outline-red-500 hover:text-red-500">
+                  <Button
+                    onClick={() => {
+                      handleDelete(row.id);
+                    }}
+                    className="normal-case outline-1 outline outline-red-300 text-red-300 hover:outline-red-500 hover:text-red-500"
+                  >
                     Delete
                   </Button>
                 </div>
