@@ -83,12 +83,13 @@ export default function MahasiswaPage() {
     }
   };
   useEffect(() => {
-    if (users !== null) {
+    
       const fetchUsers = async () => {
         try {
           setLoading(true);
           const fetchedUsers = await getUsers();
           setUsers(fetchedUsers);
+
         } catch (err) {
           setLoading(false);
           console.error(err);
@@ -97,7 +98,6 @@ export default function MahasiswaPage() {
         }
       };
       fetchUsers();
-    }
   }, [setLoading]);
 
   return (

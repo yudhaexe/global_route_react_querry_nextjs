@@ -1,6 +1,6 @@
 import MahasiswaPage from "@/components/home/MahasiswaPage";
 
-export default function Home() {
+export default function Mahasiswa() {
   return (
     <>
     <MahasiswaPage/>
