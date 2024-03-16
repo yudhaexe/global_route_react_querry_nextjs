@@ -7,7 +7,7 @@ const DataCounter = () => {
 
   return (
     <div>
-      <h2>Total Users: {usersCount}</h2>
+      <h2>Total Users : {usersCount}</h2>
     </div>
   );
 };

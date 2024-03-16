@@ -13,8 +13,8 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
-import useLoadingStore from "@/store/loading";
-import useUsers from "@/store/users";
+import useUsers from "@/store/CountData";
+import useLoadingStore from "@/store/Loading";
 
 const pages = ["Home", "Mahasiswa"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
