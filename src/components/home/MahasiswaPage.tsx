@@ -27,10 +27,8 @@ export default function MahasiswaPage() {
   const [users, setUsers] = useState<Users[]>([]);
   const setLoading = useLoadingStore((state) => state.setLoading);
   const setUsersCount = useCountData((state) => state.setUsersCount);
+  setUsersCount(users.length);
 
-  if (users.length>0) {
-    setUsersCount(users.length);
-  }
   const onSubmitClicked = async () => {
     if (selectedEditUserId != null) {
       try {
@@ -85,20 +83,21 @@ export default function MahasiswaPage() {
     }
   };
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        setLoading(true);
-        const fetchedUsers = await getUsers();
-        setUsers(fetchedUsers);
-      } catch (err) {
-        setLoading(false);
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUsers();
+    if (users !== null) {
+      const fetchUsers = async () => {
+        try {
+          setLoading(true);
+          const fetchedUsers = await getUsers();
+          setUsers(fetchedUsers);
+        } catch (err) {
+          setLoading(false);
+          console.error(err);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchUsers();
+    }
   }, [setLoading]);
 
   return (
