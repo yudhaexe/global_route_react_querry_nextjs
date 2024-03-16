@@ -1,14 +1,15 @@
-"use client";
+// components/DataCounter.tsx
+import React from 'react';
+import useCountData from '../store/CountData'; // Adjust the import path according to your file structure
 
-import useUsers from "@/store/users";
-import { Typography } from "@mui/material";
-import { useEffect } from "react";
+const DataCounter = () => {
+  const usersCount = useCountData(state => state.usersCount);
 
-interface DataCounterProps {
-  count: number;
-}
-export default function DataCounter(props: DataCounterProps) {
   return (
-    <Typography className="font-bold">Total Data : {props.count}</Typography>
+    <div>
+      <h2>Total Users: {usersCount}</h2>
+    </div>
   );
-}
+};
+
+export default DataCounter;
